@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Research | Kyle Free</title>
+
+  <!-- Bootstrap + custom styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/styles.css" rel="stylesheet">
+</head>
+
+<!-- make page fill the viewport so footer stays at bottom -->
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="ai.html">AI Research</a></li>
+          <li class="nav-item"><a class="nav-link" href="resume.html">Résumé</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-grow-1">
+    <section class="container py-5">
+
+      <h2 class="mb-4">Semantic Volume in BERT – Project Overview</h2>
+
+      <!-- 1 - What we set out to do -->
+      <h4 class="mt-4">1 - What we set out to do</h4>
+      <p>
+        Large language models (LLMs) compress meaning into fixed-size vectors, yet language is messy.
+        Polysemy (one spelling, many senses) is everywhere – <em>bank</em> (“financial institution” vs “river bank”),
+        <em>apple</em> (fruit vs company), <em>python</em> (language vs snake).
+        Researchers often look at average embeddings or single sentences, which hides that diversity.
+        Our goal is to <strong>quantify</strong> how many distinct senses BERT actually represents for a word and
+        give each word a single numeric <em>semantic-diversity</em> score that can be compared layer-to-layer.
+      </p>
+
+      <!-- 2 - Pilot experiment -->
+      <h4 class="mt-4">2 - Pilot experiment: five hand-picked words</h4>
+      <p>We started with just five words to sanity test</p>
+      <ul>
+        <li><strong>Sentence collection</strong> – 1 000 natural sentences per word from WordNet &amp; Wikipedia.</li>
+        <li><strong>Embedding extraction</strong> – grabbed the hidden-state vector from <em>all 13 BERT layers</em>.</li>
+        <li><strong>Visual checks</strong> – PCA and 3-D Isomap</li>
+      </ul>
+      <figure class="text-center my-4">
+        <img src="assets/images/plot_with_legend.png"
+             class="img-fluid"
+             alt="Plot of 5 starting words using PCA">
+            </figure>
+      <!-- 3 - Semantic Volume -->
+      <h4 class="mt-4">3 - From eyeballing to a metric: Semantic Volume</h4>
+      <ul>
+        <li><strong>Dimensionality reduction</strong> – Isomap preserved neighbourhood distances in 3-D.</li>
+        <li><strong>Gaussian Mixture Model</strong> – soft clustering models multiple senses.</li>
+        <li><strong>Volume formula</strong> – each Gaussian’s covariance Σ yields an ellipsoid; weighted
+            volumes are summed to give the word’s Semantic Volume (SV).</li>
+        <li><strong>Sanity check</strong> – high SV for polysemous words, minimal SV for monosemous ones.</li>
+      </ul>
+
+      <!-- 4 - Data quirks -->
+      <h4 class="mt-4">4 - Data quirks and the “Householder” glitch</h4>
+      <p>
+        Scaling to 5 000 words exposed a few huge outliers. The culprit was duplicated boiler-plate sentences
+        (every U.S. county page reused the same template for “Householder”). We dropped sentences that were
+        at least 90 % identical, eliminating the duplicates.
+      </p>
+      <figure class="text-center my-4">
+        <img src="assets/images/sentence_counts_histogram_with_quartiles.png"
+             class="img-fluid"
+             alt="Histogram of unique sentence counts with quartile markers">
+        </figure>
+
+      <!-- 5 - Key take-aways -->
+      <h4 class="mt-4">5 - Key take-aways so far</h4>
+      <ul>
+        <li><strong>BERT separates senses</strong> – distinct embedding clouds arise with no extra supervision.</li>
+        <li><strong>Semantic Volume tracks polysemy</strong> – high SV aligns with many dictionary senses; low SV with one meaning.</li>
+        <li><strong>Sweet-spot layers</strong> – contextual diversity peaks around layers 5-7, then contracts near the top.</li>
+      </ul>
+
+      <p class="mt-3">
+        <em>Open questions:</em> How different is SV from metrics like SemD or frequency-based diversity?
+        What downstream tasks could benefit – curriculum learning, sense-aware adapters, dataset auditing?
+      </p>
+
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto">
+    <div class="container text-center">
+      <p class="mb-2">© 2025 Kyle Free | Security Engineer &amp; AI Researcher</p>
+      <p class="small">
+        <a href="mailto:kyle3free3@gmail.com">Email</a> • 
+        <a href="https://www.linkedin.com/in/kyle-free33/" target="_blank" rel="noopener">LinkedIn</a> • 
+        <a href="https://github.com/KyleFree33/kylefree33.github.io" target="_blank" rel="noopener">GitHub</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/scripts.js"></script>
+</body>
+</html>
